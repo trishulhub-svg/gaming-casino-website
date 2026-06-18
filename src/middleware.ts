@@ -15,6 +15,7 @@ const PUBLIC_PREFIXES = [
   '/api/auth/',
   '/api/games',
   '/api/public/',
+  '/api/health',
   '/_next/',
   '/favicon.ico',
   '/logo.svg',
