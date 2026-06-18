@@ -77,3 +77,32 @@ Stage Summary:
 - All 60 routes (pages + APIs) compile and are server-rendered on demand
 - User should now be able to redeploy on Vercel successfully
 - If Vercel still has issues, they may need to add `--experimental-build-mode=compile` to their build override (or use the installCommand + buildCommand in vercel.json)
+
+---
+Task ID: /demo-casino-003
+Agent: Ujjval (Support Dev / SMM, Tier 2)
+Task: Fix 3-4 Vercel deployment errors reported by user (with screenshots)
+
+Work Log:
+- Analyzed 5 screenshots via VLM:
+  * Screenshot 1: Edge Runtime error — auth.ts (Node crypto) in middleware
+  * Screenshot 2: Module not found — @libsql/client in db.ts
+  * Screenshot 3: Build exited with code 1
+  * Screenshots 4-5: Vercel project settings (no errors, just info)
+- Verified GitHub has latest fixes: middleware uses auth-edge.ts, @libsql/client in package.json
+- Diagnosed: errors likely from cached Vercel build OR stale lockfile
+- Found additional issue: @types/react was pinned to v18 while React 19 was used
+- Applied fixes:
+  1. Pin @types/react and @types/react-dom to ^19 (was v18 — type mismatch)
+  2. Pin react and react-dom to ^19.2.0 (was loose "19")
+  3. Add .npmrc with legacy-peer-deps + auto-install-peers
+  4. Regenerate bun.lock from scratch (rm -rf node_modules && bun install)
+  5. Keep build as 'next build --experimental-build-mode=compile'
+  6. Clean vercel.json with explicit installCommand and buildCommand
+- Verified local build: 60 routes compile cleanly
+
+Stage Summary:
+- Commit d547cb6 pushed to https://github.com/trishulhub-svg/gaming-casino-website
+- All dependency version mismatches fixed
+- Lockfile is fresh and correct
+- User needs to: Vercel → Deployments → Redeploy → UNCHECK "Use existing Build Cache"
