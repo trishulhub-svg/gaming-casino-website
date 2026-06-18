@@ -61,4 +61,4 @@ server.log
 
 # Local DB
 db/
-*.db
+*.dbtool-results/
