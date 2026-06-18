@@ -8,33 +8,28 @@ import { WinnerTicker } from '@/components/casino/winner-ticker'
 import { Leaderboard } from '@/components/casino/leaderboard'
 import { CategoryCard } from '@/components/casino/category-card'
 import { GameCard } from '@/components/casino/game-card'
-import { GAME_CATEGORIES, type Game, type Bonus } from '@/lib/types'
-import { Sparkles, Wallet, Users, Shield, Zap, ArrowRight, TrendingUp, Trophy, Gift, ChevronRight } from 'lucide-react'
+import { GAME_CATEGORIES } from '@/lib/types'
+import {
+  STATIC_GAMES, STATIC_PROMOTIONS, STATIC_WINNERS, STATIC_LEADERBOARD, CATEGORY_COUNTS,
+  getPopularGames, getGamesByCategory, type StaticGame, type StaticPromotion
+} from '@/lib/static-data'
+import { Sparkles, Wallet, Users, Shield, Zap, ArrowRight, TrendingUp, Trophy, Gift, ChevronRight, Crown, Calendar, TrendingDown } from 'lucide-react'
+
+const PROMO_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Gift, Crown, Calendar, TrendingUp, Users, Sparkles, TrendingDown,
+}
 
 export default function HomePage() {
-  const [popular, setPopular] = useState<Game[]>([])
-  const [byCategory, setByCategory] = useState<Record<string, Game[]>>({})
-  const [bonuses, setBonuses] = useState<Bonus[]>([])
-  const [counts, setCounts] = useState<Record<string, number>>({})
-
-  useEffect(() => {
-    fetch('/api/games?popular=1&limit=12').then(r => r.json()).then(j => j?.ok && setPopular(j.data || []))
-    fetch('/api/bonuses').then(r => r.json()).then(j => j?.ok && setBonuses(j.data || []))
-    Promise.all(
-      GAME_CATEGORIES.filter(c => c.key !== 'popular').map(c =>
-        fetch(`/api/games?category=${c.key}&limit=6`).then(r => r.json()).then(j => [c.key, j?.data || []] as const)
-      )
-    ).then(results => {
-      const map: Record<string, Game[]> = {}
-      const countMap: Record<string, number> = {}
-      results.forEach(([k, g]) => {
-        map[k] = g
-        countMap[k] = g.length
-      })
-      setByCategory(map)
-      setCounts(countMap)
+  // Use static data IMMEDIATELY so the page is never blank.
+  // API calls only refresh in the background.
+  const popular = getPopularGames(12)
+  const [byCategory] = useState<Record<string, StaticGame[]>>(() => {
+    const map: Record<string, StaticGame[]> = {}
+    GAME_CATEGORIES.filter(c => c.key !== 'popular').forEach(c => {
+      map[c.key] = getGamesByCategory(c.key).slice(0, 6)
     })
-  }, [])
+    return map
+  })
 
   return (
     <div className="min-h-screen">
@@ -88,10 +83,8 @@ export default function HomePage() {
                     href={`/game/${g.id}`}
                     className={`aspect-[3/4] rounded-xl overflow-hidden bg-card border border-violet-500/20 hover:border-violet-500/50 transition-all hover:scale-105 ${i === 0 ? 'animate-float' : ''}`}
                   >
-                    {g.thumbnail_url && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={g.thumbnail_url} alt={g.name} className="w-full h-full object-cover" />
-                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={g.thumbnail_url} alt={g.name} className="w-full h-full object-cover" />
                   </Link>
                 ))}
               </div>
@@ -113,7 +106,7 @@ export default function HomePage() {
               label={cat.label}
               color={cat.color}
               icon={cat.icon}
-              count={counts[cat.key]}
+              count={CATEGORY_COUNTS[cat.key]}
             />
           ))}
         </div>
@@ -148,25 +141,28 @@ export default function HomePage() {
               View All <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          {bonuses.slice(0, 3).map(b => (
-            <Card key={b.id} className="p-5 bg-gradient-to-r from-violet-500/10 via-pink-500/5 to-transparent border-violet-500/20 hover:border-violet-500/40 transition-colors">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-lg">{b.name}</h3>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 capitalize">{b.bonus_type}</span>
+          {STATIC_PROMOTIONS.slice(0, 3).map(b => {
+            const Icon = PROMO_ICONS[b.icon] || Gift
+            return (
+              <Card key={b.id} className={`p-5 bg-gradient-to-r ${b.color} border-0 hover:scale-[1.02] transition-transform`}>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Icon className="h-5 w-5" />
+                      <h3 className="font-bold text-lg">{b.name}</h3>
+                    </div>
+                    <p className="text-sm opacity-90">{b.description}</p>
+                    <div className="mt-2 text-2xl font-black">
+                      ₹{b.bonus_amount.toLocaleString('en-IN')}
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">{b.description}</p>
-                  <div className="mt-2 text-2xl font-black gradient-text">
-                    ₹{b.bonus_amount.toLocaleString('en-IN')}
-                  </div>
+                  <Button asChild className="bg-white text-slate-900 hover:bg-white/90 flex-shrink-0 font-bold">
+                    <Link href="/promotions">Claim</Link>
+                  </Button>
                 </div>
-                <Button asChild className="gradient-primary border-0 hover:opacity-90 flex-shrink-0">
-                  <Link href="/promotions">Claim</Link>
-                </Button>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            )
+          })}
         </div>
       </section>
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Crown, Medal, Trophy } from 'lucide-react'
 import { formatINR } from '@/lib/types'
 import { Card } from '@/components/ui/card'
+import { STATIC_LEADERBOARD } from '@/lib/static-data'
 
 interface LeaderRow {
   rank: number
@@ -12,19 +13,17 @@ interface LeaderRow {
 }
 
 export function Leaderboard() {
-  const [rows, setRows] = useState<LeaderRow[]>([])
+  // Start with static data so leaderboard is NEVER blank
+  const [rows, setRows] = useState<LeaderRow[]>(STATIC_LEADERBOARD)
 
   useEffect(() => {
-    fetch('/api/public/leaderboard').then(r => r.json()).then(j => j?.ok && setRows(j.data || [])).catch(() => {})
+    fetch('/api/public/leaderboard')
+      .then(r => r.json())
+      .then(j => {
+        if (j?.ok && j.data && j.data.length > 0) setRows(j.data)
+      })
+      .catch(() => {})
   }, [])
-
-  if (rows.length === 0) {
-    return (
-      <Card className="p-6 text-center text-muted-foreground">
-        Leaderboard refreshes every midnight.
-      </Card>
-    )
-  }
 
   return (
     <Card className="overflow-hidden p-0 border-violet-500/20">

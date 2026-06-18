@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Trophy } from 'lucide-react'
 import { formatINR, timeAgo } from '@/lib/types'
+import { STATIC_WINNERS } from '@/lib/static-data'
 
 interface TickerItem {
   id: number
@@ -13,10 +14,19 @@ interface TickerItem {
 }
 
 export function WinnerTicker() {
-  const [items, setItems] = useState<TickerItem[]>([])
+  // Start with static data so ticker is NEVER blank
+  const [items, setItems] = useState<TickerItem[]>(STATIC_WINNERS)
 
   useEffect(() => {
-    const load = () => fetch('/api/public/ticker').then(r => r.json()).then(j => j?.ok && setItems(j.data || [])).catch(() => {})
+    // Try to refresh from API; if it fails, keep static data
+    const load = () => {
+      fetch('/api/public/ticker')
+        .then(r => r.json())
+        .then(j => {
+          if (j?.ok && j.data && j.data.length > 0) setItems(j.data)
+        })
+        .catch(() => {})
+    }
     load()
     const id = setInterval(load, 30000)
     return () => clearInterval(id)
@@ -39,7 +49,7 @@ export function WinnerTicker() {
               <div key={`${item.id}-${idx}`} className="flex items-center gap-2 text-sm">
                 <span className="text-muted-foreground">{item.username}</span>
                 <span className="text-emerald-400 font-semibold">won {formatINR(item.amount)}</span>
-                <span className="text-xs text-muted-foreground">on {item.notes?.replace('Win on ', '')}</span>
+                <span className="text-xs text-muted-foreground">on {item.notes?.replace('Win on ', '') || 'a game'}</span>
                 <span className="text-xs text-muted-foreground">· {timeAgo(item.created_at)}</span>
               </div>
             ))}

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuthStore, useToastStore } from '@/lib/store'
+import { Trophy, Gift, Zap } from 'lucide-react'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -48,7 +49,7 @@ export default function RegisterPage() {
             role: prof.data.role, referral_code: prof.data.referral_code,
           })
         }
-        push({ type: 'success', message: 'Account created!' })
+        push({ type: 'success', message: 'Account created! Welcome to TrishulCasino.' })
         router.push('/dashboard')
       } else {
         push({ type: 'error', message: j.error || 'Registration failed' })
@@ -62,50 +63,67 @@ export default function RegisterPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-md">
-      <Card className="p-6">
+      <Card className="p-8 border-violet-500/20">
         <div className="text-center mb-6">
+          <div className="w-16 h-16 mx-auto rounded-2xl gradient-primary flex items-center justify-center mb-3">
+            <Trophy className="h-8 w-8 text-white" />
+          </div>
           <h1 className="text-2xl font-bold">Create Account</h1>
           <p className="text-sm text-muted-foreground">Join TrishulCasino & claim 100% welcome bonus</p>
         </div>
         <form onSubmit={onSubmit} className="space-y-3">
           <div className="space-y-1.5">
             <Label htmlFor="username">Username *</Label>
-            <Input id="username" value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} required minLength={3} className="bg-background" />
+            <Input id="username" value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} required minLength={3} className="bg-background" placeholder="player123" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email *</Label>
-            <Input id="email" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required className="bg-background" />
+            <Input id="email" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required className="bg-background" placeholder="you@example.com" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+91..." className="bg-background" />
+            <Input id="phone" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="bg-background" placeholder="+91..." />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="password">Password *</Label>
-              <Input id="password" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required minLength={6} className="bg-background" />
+              <Input id="password" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required minLength={6} className="bg-background" placeholder="••••••" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="confirm">Confirm *</Label>
-              <Input id="confirm" type="password" value={form.confirm} onChange={e => setForm({ ...form, confirm: e.target.value })} required minLength={6} className="bg-background" />
+              <Input id="confirm" type="password" value={form.confirm} onChange={e => setForm({ ...form, confirm: e.target.value })} required minLength={6} className="bg-background" placeholder="••••••" />
             </div>
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="ref">Referral Code (optional)</Label>
-            <Input id="ref" value={form.referral_code} onChange={e => setForm({ ...form, referral_code: e.target.value })} className="bg-background" />
+            <Input id="ref" value={form.referral_code} onChange={e => setForm({ ...form, referral_code: e.target.value })} className="bg-background" placeholder="ABC123" />
           </div>
-          <Button type="submit" disabled={loading} className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900">
+          <Button type="submit" disabled={loading} className="w-full gradient-primary border-0 hover:opacity-90 font-bold">
             {loading ? 'Creating...' : 'Create Account'}
           </Button>
         </form>
         <div className="mt-4 pt-4 border-t border-border text-center text-sm">
           Already have an account?{' '}
-          <Link href="/login" className="text-amber-500 font-semibold hover:underline">Log in</Link>
+          <Link href="/login" className="text-violet-400 font-semibold hover:underline">Log in</Link>
         </div>
-        <p className="mt-4 text-[11px] text-center text-muted-foreground">
-          By signing up you confirm you are 18+ and agree to our Terms of Service.
-        </p>
       </Card>
+      <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-muted-foreground">
+        <div className="flex flex-col items-center gap-1 p-2">
+          <Gift className="h-4 w-4 text-pink-400" />
+          <span>₹10k Bonus</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 p-2">
+          <Zap className="h-4 w-4 text-violet-400" />
+          <span>Instant Play</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 p-2">
+          <Trophy className="h-4 w-4 text-yellow-400" />
+          <span>500+ Games</span>
+        </div>
+      </div>
+      <p className="mt-4 text-[11px] text-center text-muted-foreground">
+        By signing up you confirm you are 18+ and agree to our Terms of Service.
+      </p>
     </div>
   )
 }

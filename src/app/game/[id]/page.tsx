@@ -2,48 +2,47 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Skeleton } from '@/components/ui/skeleton'
 import { BalanceDisplay } from '@/components/casino/balance-display'
 import { useAuthStore, useToastStore } from '@/lib/store'
-import { formatINR, type Game, type Bet } from '@/lib/types'
+import { formatINR } from '@/lib/types'
+import { getGameById } from '@/lib/static-data'
 import { Play, History, ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
 import Link from 'next/link'
 
+interface BetResult {
+  id: number
+  bet_amount: number
+  win_amount: number
+  result: string
+  created_at: string
+}
+
 export default function GamePlayPage() {
   const params = useParams<{ id: string }>()
-  const router = useRouter()
   const { user, isAuthenticated, updateBalance } = useAuthStore()
   const { push } = useToastStore()
-  const [game, setGame] = useState<Game | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [betAmount, setBetAmount] = useState(10)
-  const [history, setHistory] = useState<Bet[]>([])
+  // Use static data IMMEDIATELY — no loading state, no blank page
+  const staticGame = getGameById(Number(params.id))
+  const [game, setGame] = useState(staticGame || null)
+  const [betAmount, setBetAmount] = useState(staticGame?.min_bet || 10)
+  const [history, setHistory] = useState<BetResult[]>([])
   const [playing, setPlaying] = useState(false)
-  const [lastResult, setLastResult] = useState<Bet | null>(null)
+  const [lastResult, setLastResult] = useState<BetResult | null>(null)
 
   useEffect(() => {
-    // Public: anyone can view the game page.
-    // Bet history is only fetched if authenticated.
-    fetch(`/api/games/${params.id}`)
-      .then(r => r.json())
-      .then(j => {
-        if (j.ok) {
-          setGame(j.data)
-          setBetAmount(j.data.min_bet)
-        }
-        setLoading(false)
-      })
+    // Refresh from API in background (optional)
     if (isAuthenticated) {
       fetch('/api/bets/history?limit=10')
         .then(r => r.json())
         .then(j => j?.ok && setHistory(j.data || []))
+        .catch(() => {})
     }
-  }, [params.id, isAuthenticated])
+  }, [isAuthenticated])
 
   const play = async () => {
     if (!game) return
@@ -58,14 +57,11 @@ export default function GamePlayPage() {
       const j = await r.json()
       if (j.ok) {
         updateBalance(j.data.balance)
-        const newBet: Bet = {
+        const newBet: BetResult = {
           id: j.data.bet_id,
-          user_id: user?.id || 0,
-          game_id: game.id,
           bet_amount: betAmount,
           win_amount: j.data.win_amount,
           result: j.data.result,
-          game_data: null,
           created_at: new Date().toISOString(),
         }
         setLastResult(newBet)
@@ -78,35 +74,25 @@ export default function GamePlayPage() {
       } else {
         push({ type: 'error', message: j.error || 'Bet failed' })
       }
+    } catch {
+      push({ type: 'error', message: 'Network error' })
     } finally {
       setPlaying(false)
     }
-  }
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-12 w-32 mb-4" />
-        <div className="grid lg:grid-cols-3 gap-6">
-          <Skeleton className="lg:col-span-2 aspect-video" />
-          <Skeleton className="h-64" />
-        </div>
-      </div>
-    )
   }
 
   if (!game) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <p className="text-muted-foreground">Game not found.</p>
-        <Button asChild className="mt-4"><Link href="/games/popular">Browse games</Link></Button>
+        <Button asChild className="mt-4 gradient-primary border-0"><Link href="/games/popular">Browse games</Link></Button>
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <Link href={`/games/${game.category}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-amber-500 mb-4">
+      <Link href={`/games/${game.category}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-violet-400 mb-4">
         <ArrowLeft className="h-4 w-4" /> Back to {game.category}
       </Link>
 
@@ -114,14 +100,14 @@ export default function GamePlayPage() {
         {/* Game canvas */}
         <div className="lg:col-span-2 space-y-4">
           <Card className="overflow-hidden p-0">
-            <div className="aspect-video bg-gradient-to-br from-slate-800 via-slate-900 to-black flex flex-col items-center justify-center relative">
+            <div className="aspect-video bg-gradient-to-br from-violet-900 via-slate-900 to-black flex flex-col items-center justify-center relative">
               {game.thumbnail_url && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={game.thumbnail_url} alt={game.name} className="absolute inset-0 w-full h-full object-cover opacity-30" />
               )}
               <div className="relative text-center z-10">
                 <h2 className="text-3xl font-black mb-2 text-white">{game.name}</h2>
-                <p className="text-sm text-amber-300 mb-4">by {game.provider}</p>
+                <p className="text-sm text-violet-300 mb-4">by {game.provider}</p>
                 <div className="flex justify-center gap-3 mb-4">
                   <div className="px-3 py-1 bg-black/50 rounded text-xs">Min: {formatINR(game.min_bet)}</div>
                   <div className="px-3 py-1 bg-black/50 rounded text-xs">Max: {formatINR(game.max_bet)}</div>
@@ -129,10 +115,10 @@ export default function GamePlayPage() {
                 </div>
                 {lastResult && (
                   <div className={`mt-4 px-6 py-3 rounded-lg inline-block ${
-                    lastResult.result === 'win' ? 'bg-green-500/20 border border-green-500' : 'bg-red-500/20 border border-red-500'
+                    lastResult.result === 'win' ? 'bg-emerald-500/20 border border-emerald-500' : 'bg-red-500/20 border border-red-500'
                   }`}>
                     {lastResult.result === 'win' ? (
-                      <div className="flex items-center gap-2 text-green-400">
+                      <div className="flex items-center gap-2 text-emerald-400">
                         <TrendingUp className="h-5 w-5" />
                         <span className="font-bold">You won {formatINR(lastResult.win_amount)}!</span>
                       </div>
@@ -150,7 +136,7 @@ export default function GamePlayPage() {
           <Card className="p-4">
             <p className="text-sm text-muted-foreground">
               This is a demo simulation. In production, the actual game (provided by {game.provider}) would load inside an iframe here.
-              Try placing a bet below to see the win/loss flow.
+              {isAuthenticated ? ' Place a bet below to see the win/loss flow.' : ' Login to place bets and see win/loss results.'}
             </p>
           </Card>
         </div>
@@ -192,7 +178,7 @@ export default function GamePlayPage() {
                 <Button
                   onClick={play}
                   disabled={playing || betAmount < game.min_bet || betAmount > game.max_bet || (user && betAmount > user.balance)}
-                  className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold"
+                  className="w-full gradient-primary border-0 hover:opacity-90 font-bold"
                 >
                   <Play className="h-4 w-4 mr-1 fill-current" />
                   {playing ? 'Playing...' : `Play for ${formatINR(betAmount)}`}
@@ -206,10 +192,10 @@ export default function GamePlayPage() {
                 <p className="text-sm text-muted-foreground text-center py-2">
                   You can browse all games for free. To place real bets, please log in.
                 </p>
-                <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold">
+                <Button asChild className="w-full gradient-primary border-0 hover:opacity-90 font-bold">
                   <Link href={`/login?next=/game/${params.id}`}>Login to Play</Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="outline" className="w-full border-violet-500/30">
                   <Link href="/register">Create Free Account</Link>
                 </Button>
               </div>
@@ -219,7 +205,7 @@ export default function GamePlayPage() {
           {isAuthenticated && (
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-3">
-                <History className="h-4 w-4 text-amber-500" />
+                <History className="h-4 w-4 text-violet-400" />
                 <h3 className="font-bold text-sm">Recent Bets</h3>
               </div>
               {history.length === 0 ? (
@@ -232,7 +218,7 @@ export default function GamePlayPage() {
                         <div className="font-medium">{formatINR(b.bet_amount)}</div>
                         <div className="text-[10px] text-muted-foreground">{new Date(b.created_at).toLocaleTimeString()}</div>
                       </div>
-                      <div className={b.result === 'win' ? 'text-green-400' : 'text-red-400'}>
+                      <div className={b.result === 'win' ? 'text-emerald-400' : 'text-red-400'}>
                         {b.result === 'win' ? `+${formatINR(b.win_amount)}` : `-${formatINR(b.bet_amount)}`}
                       </div>
                     </div>
