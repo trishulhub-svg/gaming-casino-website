@@ -76,22 +76,28 @@ function PromoCard({ bonus }: { bonus: StaticPromotion }) {
   }
 
   return (
-    <Card className={`p-6 bg-gradient-to-br ${bonus.color} border-0 hover:scale-[1.02] transition-transform text-white`}>
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-            <Icon className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="font-bold text-xl">{bonus.name}</h3>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/20 capitalize">{bonus.bonus_type}</span>
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-3xl font-black">{formatINR(bonus.bonus_amount)}</div>
-        </div>
+    <Card className={`relative p-6 bg-gradient-to-br ${bonus.color} border-0 hover:scale-[1.02] transition-transform text-white overflow-hidden`}>
+      {/* Background image */}
+      <div className="absolute right-0 top-0 bottom-0 w-2/5 opacity-20">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={bonus.image} alt="" className="w-full h-full object-cover" />
       </div>
-      <p className="text-sm opacity-90 mb-4">{bonus.description}</p>
+      <div className="relative">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+              <Icon className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-xl">{bonus.name}</h3>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-white/20 capitalize">{bonus.bonus_type}</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-3xl font-black">{formatINR(bonus.bonus_amount)}</div>
+          </div>
+        </div>
+        <p className="text-sm opacity-90 mb-4">{bonus.description}</p>
       <div className="grid grid-cols-2 gap-3 text-xs mb-4">
         <div className="bg-white/10 rounded-md p-2">
           <div className="opacity-80">Min Deposit</div>
@@ -111,6 +117,7 @@ function PromoCard({ bonus }: { bonus: StaticPromotion }) {
           <><Check className="h-4 w-4 mr-1" /> Claimed</>
         ) : claiming ? 'Claiming...' : 'Claim Bonus'}
       </Button>
+      </div>
     </Card>
   )
 }

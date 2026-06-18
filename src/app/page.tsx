@@ -37,7 +37,12 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-grid">
-        <div className="absolute inset-0 bg-hero-glow pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/hero/casino-hero.png" alt="" className="w-full h-full object-cover opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-hero-glow" />
+        </div>
         <div className="container mx-auto px-4 py-16 md:py-24 relative">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
@@ -144,14 +149,19 @@ export default function HomePage() {
           {STATIC_PROMOTIONS.slice(0, 3).map(b => {
             const Icon = PROMO_ICONS[b.icon] || Gift
             return (
-              <Card key={b.id} className={`p-5 bg-gradient-to-r ${b.color} border-0 hover:scale-[1.02] transition-transform`}>
-                <div className="flex items-center justify-between gap-4">
+              <Card key={b.id} className={`relative p-5 bg-gradient-to-r ${b.color} border-0 hover:scale-[1.02] transition-transform overflow-hidden`}>
+                {/* Background image */}
+                <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-20">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={b.image} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="relative flex items-center justify-between gap-4">
                   <div className="flex-1 text-white">
                     <div className="flex items-center gap-2 mb-1">
                       <Icon className="h-5 w-5" />
                       <h3 className="font-bold text-lg">{b.name}</h3>
                     </div>
-                    <p className="text-sm opacity-90">{b.description}</p>
+                    <p className="text-sm opacity-90 line-clamp-2">{b.description}</p>
                     <div className="mt-2 text-2xl font-black">
                       ₹{b.bonus_amount.toLocaleString('en-IN')}
                     </div>

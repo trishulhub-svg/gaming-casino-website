@@ -16,20 +16,44 @@ export interface StaticGame {
   rtp_percentage: number
 }
 
-// Helper: generate a vibrant thumbnail URL using placehold.co with category-specific colors
-function thumb(name: string, category: string, id: number): string {
-  const colors: Record<string, string> = {
-    slots: '8B5CF6/EC4899',
-    lottery: 'FBBF24/F59E0B',
-    sports: '10B981/059669',
-    casino: 'EF4444/DC2626',
-    card: '6366F1/4F46E5',
-    fishing: '06B6D4/0891B2',
-    mini: 'A855F7/7C3AED',
-  }
-  const c = colors[category] || '8B5CF6/EC4899'
-  const text = encodeURIComponent(name)
-  return `https://placehold.co/300x400/${c}/FFFFFF/png?text=${text}`
+// AI-generated images stored in /public/images/
+const GAME_IMAGES: Record<string, string> = {
+  'Sweet Bonanza': '/images/games/sweet-bonanza.png',
+  'Gates of Olympus': '/images/games/gates-of-olympus.png',
+  'Aviator': '/images/games/aviator.png',
+  'Win Go 30s': '/images/games/win-go.png',
+  'Win Go 1Min': '/images/games/win-go.png',
+  'Win Go 3Min': '/images/games/win-go.png',
+  'Win Go 5Min': '/images/games/win-go.png',
+  'K3 Lotre': '/images/games/win-go.png',
+  '5D Lotre': '/images/games/win-go.png',
+  'Live Andar Bahar': '/images/games/andar-bahar.png',
+  'Live Teen Patti': '/images/games/andar-bahar.png',
+  'Cricket Live': '/images/games/cricket.png',
+  'Football Live': '/images/games/cricket.png',
+  'Tennis Live': '/images/games/cricket.png',
+  'Kabaddi Live': '/images/games/cricket.png',
+  'Plinko': '/images/games/plinko.png',
+  'Crash': '/images/games/aviator.png',
+  'Super Ace': '/images/games/super-ace.png',
+  'Mahjong Ways': '/images/games/super-ace.png',
+}
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  slots: '/images/categories/slots.png',
+  lottery: '/images/categories/lottery.png',
+  sports: '/images/categories/sports.png',
+  casino: '/images/categories/casino.png',
+  card: '/images/categories/card.png',
+  fishing: '/images/categories/fishing.png',
+  mini: '/images/categories/mini.png',
+}
+
+// Helper: get image for a game
+function getGameImage(name: string, category: string): string {
+  if (GAME_IMAGES[name]) return GAME_IMAGES[name]
+  // Fallback to category image
+  return CATEGORY_IMAGES[category] || '/images/categories/slots.png'
 }
 
 export const STATIC_GAMES: StaticGame[] = [
@@ -106,7 +130,7 @@ export const STATIC_GAMES: StaticGame[] = [
   { id: 77, name: 'Keno', category: 'mini', provider: 'Spribe', is_popular: false, min_bet: 10, max_bet: 10000, rtp_percentage: 96.00, thumbnail_url: '', game_url: '' },
 ].map(g => ({
   ...g,
-  thumbnail_url: g.thumbnail_url || thumb(g.name, g.category, g.id),
+  thumbnail_url: g.thumbnail_url || getGameImage(g.name, g.category),
   game_url: `/game/${g.id}`,
   is_active: true,
 }))
@@ -127,6 +151,10 @@ export function getGameById(id: number): StaticGame | undefined {
 
 export function getAllProviders(): string[] {
   return Array.from(new Set(STATIC_GAMES.map(g => g.provider)))
+}
+
+export function getCategoryImage(category: string): string {
+  return CATEGORY_IMAGES[category] || '/images/categories/slots.png'
 }
 
 export const CATEGORY_COUNTS: Record<string, number> = {
@@ -152,6 +180,7 @@ export interface StaticPromotion {
   is_active: boolean
   color: string
   icon: string
+  image: string
 }
 
 export const STATIC_PROMOTIONS: StaticPromotion[] = [
@@ -166,6 +195,7 @@ export const STATIC_PROMOTIONS: StaticPromotion[] = [
     is_active: true,
     color: 'from-violet-500 to-purple-600',
     icon: 'Gift',
+    image: '/images/promos/welcome.png',
   },
   {
     id: 2,
@@ -178,6 +208,7 @@ export const STATIC_PROMOTIONS: StaticPromotion[] = [
     is_active: true,
     color: 'from-pink-500 to-rose-600',
     icon: 'Calendar',
+    image: '/images/promos/daily.png',
   },
   {
     id: 3,
@@ -190,6 +221,7 @@ export const STATIC_PROMOTIONS: StaticPromotion[] = [
     is_active: true,
     color: 'from-emerald-500 to-green-600',
     icon: 'Users',
+    image: '/images/promos/referral.png',
   },
   {
     id: 4,
@@ -202,6 +234,7 @@ export const STATIC_PROMOTIONS: StaticPromotion[] = [
     is_active: true,
     color: 'from-amber-500 to-yellow-600',
     icon: 'TrendingUp',
+    image: '/images/promos/welcome.png',
   },
   {
     id: 5,
@@ -214,6 +247,7 @@ export const STATIC_PROMOTIONS: StaticPromotion[] = [
     is_active: true,
     color: 'from-yellow-400 to-amber-600',
     icon: 'Crown',
+    image: '/images/promos/vip.png',
   },
   {
     id: 6,
@@ -226,6 +260,7 @@ export const STATIC_PROMOTIONS: StaticPromotion[] = [
     is_active: true,
     color: 'from-indigo-500 to-violet-600',
     icon: 'Sparkles',
+    image: '/images/promos/daily.png',
   },
 ]
 
