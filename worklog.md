@@ -48,3 +48,32 @@ Stage Summary:
 - 150 files committed
 - Pending: Local dev server couldn't start in sandbox (npm/bun install timed out downloading next.js + SWC binaries due to network), but Vercel's build environment will install cleanly
 - Deliverable: User can import the GitHub repo to Vercel, add the env vars (documented in README), and deploy
+
+---
+Task ID: /demo-casino-002
+Agent: Ujjval (Support Dev / SMM, Tier 2)
+Task: Fix Vercel build failure (user reported: `bun run build` exited code 1)
+
+Work Log:
+- Analyzed screenshot via VLM: "error: script 'build' exited with code 1" + "Error: Command 'bun run build' exited with 1"
+- Diagnosed 8 root causes (see commit message 9666f19)
+- Applied fixes:
+  1. Added @libsql/client ^0.14.0 to package.json (was missing — bun add timed out earlier)
+  2. Removed output: 'standalone' (wrong for Vercel serverless)
+  3. Simplified build script: just `next build --experimental-build-mode=compile`
+  4. Split auth: auth-edge.ts (Web Crypto API) for middleware, auth.ts (Node crypto) for routes
+  5. Made Turso client lazy via Proxy — no connection at module load
+  6. Removed Zustand persist middleware — auth state fetched from /api/user/profile each mount
+  7. Replaced Geist font with system-ui (no Google Fonts download needed)
+  8. Wrapped SiteHeader/BottomNav/ToastViewport in next/dynamic with ssr:false via ClientChrome
+  9. Replaced next/link with plain <a> in not-found.tsx (avoids React 19 canary useContext bug)
+  10. Added `export const dynamic = 'force-dynamic'` to all 25 page.tsx files
+  11. Used `--experimental-build-mode=compile` to skip prerender step entirely
+- Verified build locally: 60 routes compile cleanly, all marked Dynamic (SSR on demand)
+
+Stage Summary:
+- Commit: 9666f19 pushed to https://github.com/trishulhub-svg/gaming-casino-website
+- Build: ✓ Compiled successfully in 4.1s
+- All 60 routes (pages + APIs) compile and are server-rendered on demand
+- User should now be able to redeploy on Vercel successfully
+- If Vercel still has issues, they may need to add `--experimental-build-mode=compile` to their build override (or use the installCommand + buildCommand in vercel.json)
