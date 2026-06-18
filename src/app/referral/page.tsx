@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { useAuthStore, useToastStore } from '@/lib/store'
 import { formatINR } from '@/lib/types'
 import { Copy, Users, Gift, Share2 } from 'lucide-react'
+import { LoginRequired } from '@/components/casino/login-required'
 
 export default function ReferralPage() {
   const { user, isAuthenticated } = useAuthStore()
@@ -22,7 +23,7 @@ export default function ReferralPage() {
   }, [isAuthenticated])
 
   if (!isAuthenticated || !user) {
-    return <div className="container mx-auto px-4 py-16 text-center text-muted-foreground">Please log in.</div>
+    return <LoginRequired next="/referral" title="Login to Access Referrals" />
   }
 
   const link = `${typeof window !== 'undefined' ? window.location.origin : ''}/register?ref=${user.referral_code}`

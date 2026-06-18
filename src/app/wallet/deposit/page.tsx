@@ -8,11 +8,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuthStore, useToastStore } from '@/lib/store'
 import { formatINR } from '@/lib/types'
+import { LoginRequired } from '@/components/casino/login-required'
 
 interface Method { id: string; name: string; min: number; max: number; fee: number; eta: string; icon: string }
 
 export default function DepositPage() {
-  const { user, updateBalance } = useAuthStore()
+  const { user, isAuthenticated, updateBalance } = useAuthStore()
   const { push } = useToastStore()
   const [methods, setMethods] = useState<Method[]>([])
   const [selected, setSelected] = useState<string>('upi')
@@ -23,6 +24,10 @@ export default function DepositPage() {
   useEffect(() => {
     fetch('/api/wallet/deposit-methods').then(r => r.json()).then(j => j?.ok && setMethods(j.data || []))
   }, [])
+
+  if (!isAuthenticated || !user) {
+    return <LoginRequired next="/wallet/deposit" title="Login to Deposit" />
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()

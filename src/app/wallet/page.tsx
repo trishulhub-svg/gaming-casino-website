@@ -5,18 +5,14 @@ import { useAuthStore } from '@/lib/store'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { BalanceDisplay } from '@/components/casino/balance-display'
+import { LoginRequired } from '@/components/casino/login-required'
 import Link from 'next/link'
 import { ArrowDownToLine, ArrowUpFromLine, History } from 'lucide-react'
 
 export default function WalletPage() {
   const { user, isAuthenticated } = useAuthStore()
   if (!isAuthenticated || !user) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <p className="text-muted-foreground">Please log in.</p>
-        <Button asChild className="mt-4 bg-amber-500 hover:bg-amber-600 text-slate-900"><Link href="/login">Login</Link></Button>
-      </div>
-    )
+    return <LoginRequired next="/wallet" title="Login to Access Your Wallet" />
   }
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">

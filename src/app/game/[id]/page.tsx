@@ -27,10 +27,8 @@ export default function GamePlayPage() {
   const [lastResult, setLastResult] = useState<Bet | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push(`/login?next=/game/${params.id}`)
-      return
-    }
+    // Public: anyone can view the game page.
+    // Bet history is only fetched if authenticated.
     fetch(`/api/games/${params.id}`)
       .then(r => r.json())
       .then(j => {
@@ -40,10 +38,12 @@ export default function GamePlayPage() {
         }
         setLoading(false)
       })
-    fetch('/api/bets/history?limit=10')
-      .then(r => r.json())
-      .then(j => j?.ok && setHistory(j.data || []))
-  }, [params.id, isAuthenticated, router])
+    if (isAuthenticated) {
+      fetch('/api/bets/history?limit=10')
+        .then(r => r.json())
+        .then(j => j?.ok && setHistory(j.data || []))
+    }
+  }, [params.id, isAuthenticated])
 
   const play = async () => {
     if (!game) return
@@ -162,69 +162,85 @@ export default function GamePlayPage() {
               <h3 className="font-bold">Place a Bet</h3>
               {user && <BalanceDisplay balance={user.balance} compact />}
             </div>
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <Label>Bet Amount</Label>
-                <Input
-                  type="number"
-                  value={betAmount}
-                  onChange={e => setBetAmount(Number(e.target.value))}
-                  min={game.min_bet}
-                  max={game.max_bet}
-                  className="bg-background"
-                />
-                <div className="flex gap-1.5 mt-2">
-                  {[10, 50, 100, 500].map(v => (
-                    <Button
-                      key={v}
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setBetAmount(v)}
-                      className="flex-1 text-xs"
-                    >
-                      ₹{v}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <Button
-                onClick={play}
-                disabled={playing || betAmount < game.min_bet || betAmount > game.max_bet || (user && betAmount > user.balance)}
-                className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold"
-              >
-                <Play className="h-4 w-4 mr-1 fill-current" />
-                {playing ? 'Playing...' : `Play for ${formatINR(betAmount)}`}
-              </Button>
-              {user && betAmount > user.balance && (
-                <p className="text-xs text-red-400 text-center">Insufficient balance. <Link href="/wallet/deposit" className="underline">Deposit</Link></p>
-              )}
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <History className="h-4 w-4 text-amber-500" />
-              <h3 className="font-bold text-sm">Recent Bets</h3>
-            </div>
-            {history.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">No bets yet.</p>
-            ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {history.map(b => (
-                  <div key={b.id} className="flex items-center justify-between text-sm py-1.5 border-b border-border last:border-0">
-                    <div>
-                      <div className="font-medium">{formatINR(b.bet_amount)}</div>
-                      <div className="text-[10px] text-muted-foreground">{new Date(b.created_at).toLocaleTimeString()}</div>
-                    </div>
-                    <div className={b.result === 'win' ? 'text-green-400' : 'text-red-400'}>
-                      {b.result === 'win' ? `+${formatINR(b.win_amount)}` : `-${formatINR(b.bet_amount)}`}
-                    </div>
+            {isAuthenticated ? (
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <Label>Bet Amount</Label>
+                  <Input
+                    type="number"
+                    value={betAmount}
+                    onChange={e => setBetAmount(Number(e.target.value))}
+                    min={game.min_bet}
+                    max={game.max_bet}
+                    className="bg-background"
+                  />
+                  <div className="flex gap-1.5 mt-2">
+                    {[10, 50, 100, 500].map(v => (
+                      <Button
+                        key={v}
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setBetAmount(v)}
+                        className="flex-1 text-xs"
+                      >
+                        ₹{v}
+                      </Button>
+                    ))}
                   </div>
-                ))}
+                </div>
+                <Button
+                  onClick={play}
+                  disabled={playing || betAmount < game.min_bet || betAmount > game.max_bet || (user && betAmount > user.balance)}
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold"
+                >
+                  <Play className="h-4 w-4 mr-1 fill-current" />
+                  {playing ? 'Playing...' : `Play for ${formatINR(betAmount)}`}
+                </Button>
+                {user && betAmount > user.balance && (
+                  <p className="text-xs text-red-400 text-center">Insufficient balance. <Link href="/wallet/deposit" className="underline">Deposit</Link></p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground text-center py-2">
+                  You can browse all games for free. To place real bets, please log in.
+                </p>
+                <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold">
+                  <Link href={`/login?next=/game/${params.id}`}>Login to Play</Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/register">Create Free Account</Link>
+                </Button>
               </div>
             )}
           </Card>
+
+          {isAuthenticated && (
+            <Card className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <History className="h-4 w-4 text-amber-500" />
+                <h3 className="font-bold text-sm">Recent Bets</h3>
+              </div>
+              {history.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">No bets yet.</p>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {history.map(b => (
+                    <div key={b.id} className="flex items-center justify-between text-sm py-1.5 border-b border-border last:border-0">
+                      <div>
+                        <div className="font-medium">{formatINR(b.bet_amount)}</div>
+                        <div className="text-[10px] text-muted-foreground">{new Date(b.created_at).toLocaleTimeString()}</div>
+                      </div>
+                      <div className={b.result === 'win' ? 'text-green-400' : 'text-red-400'}>
+                        {b.result === 'win' ? `+${formatINR(b.win_amount)}` : `-${formatINR(b.bet_amount)}`}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )}
         </div>
       </div>
     </div>

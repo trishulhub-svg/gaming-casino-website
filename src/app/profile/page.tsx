@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuthStore, useToastStore } from '@/lib/store'
 import { User as UserIcon, Lock, Banknote } from 'lucide-react'
+import { LoginRequired } from '@/components/casino/login-required'
 
 export default function ProfilePage() {
   const { user, isAuthenticated } = useAuthStore()
@@ -15,7 +16,7 @@ export default function ProfilePage() {
   const [tab, setTab] = useState<'profile' | 'password' | 'bank'>('profile')
 
   if (!isAuthenticated || !user) {
-    return <div className="container mx-auto px-4 py-16 text-center text-muted-foreground">Please log in.</div>
+    return <LoginRequired next="/profile" title="Login to Access Profile" />
   }
 
   return (

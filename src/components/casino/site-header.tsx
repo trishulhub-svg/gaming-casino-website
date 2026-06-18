@@ -36,7 +36,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     setHydrated(true)
-    // Fetch current user once on mount
+    // Fetch current user once on mount (silent — no error if not logged in)
     fetch('/api/user/profile', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(j => j?.ok && j.data && setUser({
@@ -128,15 +128,6 @@ export function SiteHeader() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
-          ) : hydrated ? (
-            <>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button asChild size="sm" className="bg-amber-500 hover:bg-amber-600 text-slate-900">
-                <Link href="/register">Sign Up</Link>
-              </Button>
-            </>
           ) : null}
 
           <button className="lg:hidden p-2 rounded-md hover:bg-card" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -156,6 +147,12 @@ export function SiteHeader() {
                 {l.label}
               </Link>
             ))}
+            {/* Discreet admin/staff login link at bottom of mobile nav */}
+            <Link href="/login?admin=1"
+              onClick={() => setMobileOpen(false)}
+              className="px-3 py-2 text-xs text-muted-foreground/50 hover:text-amber-500 col-span-2 border-t border-border mt-2 pt-3">
+              Staff Login
+            </Link>
           </div>
         </nav>
       )}

@@ -6,17 +6,25 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatINR, type Transaction } from '@/lib/types'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useAuthStore } from '@/lib/store'
+import { LoginRequired } from '@/components/casino/login-required'
 
 export default function TransactionsPage({ filterType }: { filterType?: string }) {
+  const { isAuthenticated } = useAuthStore()
   const [txs, setTxs] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [type, setType] = useState<string>(filterType || 'all')
 
   useEffect(() => {
+    if (!isAuthenticated) return
     setLoading(true)
     const url = type === 'all' ? '/api/wallet/transactions?limit=100' : `/api/wallet/transactions?type=${type}&limit=100`
     fetch(url).then(r => r.json()).then(j => { setTxs(j?.ok ? j.data || [] : []); setLoading(false) })
-  }, [type])
+  }, [type, isAuthenticated])
+
+  if (!isAuthenticated) {
+    return <LoginRequired next="/wallet/transactions" title="Login to View Transactions" />
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">

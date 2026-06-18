@@ -14,6 +14,7 @@ export default function LoginPage() {
   const router = useRouter()
   const search = useSearchParams()
   const next = search.get('next') || '/dashboard'
+  const isAdmin = search.get('admin') === '1'
   const { setUser } = useAuthStore()
   const { push } = useToastStore()
   const [identifier, setIdentifier] = useState('')
@@ -57,8 +58,10 @@ export default function LoginPage() {
     <div className="container mx-auto px-4 py-12 max-w-md">
       <Card className="p-6">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold">Welcome Back</h1>
-          <p className="text-sm text-muted-foreground">Log in to your account</p>
+          <h1 className="text-2xl font-bold">{isAdmin ? 'Staff Login' : 'Welcome Back'}</h1>
+          <p className="text-sm text-muted-foreground">
+            {isAdmin ? 'Admin / staff access only' : 'Log in to your account'}
+          </p>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">

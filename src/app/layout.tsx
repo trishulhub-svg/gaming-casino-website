@@ -36,6 +36,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <p>© {new Date().getFullYear()} TrishulCasino. All rights reserved.</p>
             <p className="text-amber-500 font-semibold">⚠ 18+ Only · Play Responsibly · Gambling can be addictive</p>
             <p>Licensed for demo purposes. Not a real-money gambling site.</p>
+            <p className="pt-2">
+              <a href="/login?admin=1" className="text-muted-foreground/50 hover:text-amber-500 underline-offset-2 hover:underline">
+                Staff Login
+              </a>
+            </p>
           </div>
         </footer>
       </body>

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { BalanceDisplay } from '@/components/casino/balance-display'
+import { LoginRequired } from '@/components/casino/login-required'
 import { useAuthStore, useToastStore } from '@/lib/store'
 import { formatINR, type Transaction, type Bet } from '@/lib/types'
 import { Wallet, TrendingUp, TrendingDown, ArrowDownToLine, ArrowUpFromLine, Users, Gift, History, Trophy } from 'lucide-react'
@@ -27,12 +28,7 @@ export default function DashboardPage() {
   }, [isAuthenticated])
 
   if (!isAuthenticated || !user) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <p className="text-muted-foreground">Please log in to view your dashboard.</p>
-        <Button asChild className="mt-4 bg-amber-500 hover:bg-amber-600 text-slate-900"><Link href="/login">Login</Link></Button>
-      </div>
-    )
+    return <LoginRequired next="/dashboard" />
   }
 
   return (
