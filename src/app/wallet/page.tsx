@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = 'force-dynamic'
 
 import { useAuthStore } from '@/lib/store'
 import { Card } from '@/components/ui/card'

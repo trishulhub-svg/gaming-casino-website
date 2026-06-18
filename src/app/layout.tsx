@@ -1,15 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import { SiteHeader } from "@/components/casino/site-header";
-import { BottomNav } from "@/components/casino/bottom-nav";
-import { ToastViewport } from "@/components/casino/toast-viewport";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { ClientChrome } from "@/components/casino/client-chrome";
 
 export const metadata: Metadata = {
   title: "TrishulCasino — Premium Online Gaming Platform",
@@ -36,11 +27,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`dark ${geistSans.variable}`}>
+    <html lang="en" className="dark">
       <body className="bg-background text-foreground min-h-screen flex flex-col antialiased">
-        <SiteHeader />
+        <ClientChrome />
         <main className="flex-1 pb-24 md:pb-8">{children}</main>
-        <BottomNav />
         <footer className="hidden md:block bg-card border-t border-border py-6 px-4 mt-auto">
           <div className="container mx-auto text-center text-xs text-muted-foreground space-y-2">
             <p>© {new Date().getFullYear()} TrishulCasino. All rights reserved.</p>
@@ -48,8 +38,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <p>Licensed for demo purposes. Not a real-money gambling site.</p>
           </div>
         </footer>
-        <Toaster />
-        <ToastViewport />
       </body>
     </html>
   );

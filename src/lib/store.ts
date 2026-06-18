@@ -1,6 +1,5 @@
 'use client'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 export interface User {
   id: number
@@ -21,21 +20,18 @@ interface AuthState {
   updateBalance: (balance: number) => void
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      isAuthenticated: false,
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
-      logout: () => set({ user: null, isAuthenticated: false }),
-      updateBalance: (balance) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, balance } : null,
-        })),
-    }),
-    { name: 'tc-auth' }
-  )
-)
+// No persist middleware — auth state is fetched from /api/user/profile on every mount.
+// This avoids all SSR/hydration issues with localStorage access.
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  logout: () => set({ user: null, isAuthenticated: false }),
+  updateBalance: (balance) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, balance } : null,
+    })),
+}))
 
 interface UIState {
   mobileNavOpen: boolean
@@ -67,7 +63,9 @@ export const useToastStore = create<ToastState>((set) => ({
   push: (t) => {
     const id = Math.random().toString(36).slice(2)
     set((s) => ({ toasts: [...s.toasts, { ...t, id }] }))
-    setTimeout(() => set((s) => ({ toasts: s.toasts.filter(x => x.id !== id) })), 4000)
+    if (typeof window !== 'undefined') {
+      setTimeout(() => set((s) => ({ toasts: s.toasts.filter(x => x.id !== id) })), 4000)
+    }
   },
   dismiss: (id) => set((s) => ({ toasts: s.toasts.filter(x => x.id !== id) })),
 }))

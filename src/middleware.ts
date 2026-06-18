@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from './lib/auth'
+import { verifyTokenEdge } from './lib/auth-edge'
 
 const PUBLIC_PATHS = [
   '/',
@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
 
   // Check session token
   const token = req.cookies.get('tc_session')?.value
-  const payload = token ? verifyToken(token) : null
+  const payload = token ? await verifyTokenEdge(token) : null
 
   // Admin route protection
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
