@@ -8,6 +8,17 @@ const ICONS: Record<string, LucideIcon> = {
   Flame, Cherry, Ticket, Trophy, Spade, Club, Fish, Gamepad2,
 }
 
+const CATEGORY_COLORS: Record<string, string> = {
+  popular: 'from-orange-500 to-red-500',
+  slots: 'from-pink-500 to-rose-500',
+  lottery: 'from-yellow-400 to-amber-500',
+  sports: 'from-emerald-500 to-green-500',
+  casino: 'from-red-500 to-rose-700',
+  card: 'from-violet-500 to-purple-500',
+  fishing: 'from-cyan-500 to-blue-500',
+  mini: 'from-indigo-500 to-violet-500',
+}
+
 export function CategoryCard({ category, label, color, icon, count }: {
   category: string
   label: string
@@ -16,14 +27,15 @@ export function CategoryCard({ category, label, color, icon, count }: {
   count?: number
 }) {
   const Icon = ICONS[icon] || Gamepad2
+  const gradient = CATEGORY_COLORS[category] || color
   return (
     <Link href={`/games/${category}`} className="block">
-      <Card className={`relative overflow-hidden p-0 bg-gradient-to-br ${color} border-0 hover:scale-105 transition-transform`}>
+      <Card className={`relative overflow-hidden p-0 bg-gradient-to-br ${gradient} border-0 hover:scale-105 hover:shadow-lg transition-all duration-300`}>
         <div className="aspect-square flex flex-col items-center justify-center text-white p-4">
           <Icon className="h-8 w-8 mb-2 drop-shadow-lg" />
           <div className="text-sm font-bold text-center">{label}</div>
           {typeof count === 'number' && (
-            <div className="text-[10px] opacity-80">{count} games</div>
+            <div className="text-[10px] opacity-80 mt-0.5">{count} games</div>
           )}
         </div>
       </Card>

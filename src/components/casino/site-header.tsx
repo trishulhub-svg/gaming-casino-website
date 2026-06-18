@@ -36,7 +36,6 @@ export function SiteHeader() {
 
   useEffect(() => {
     setHydrated(true)
-    // Fetch current user once on mount (silent — no error if not logged in)
     fetch('/api/user/profile', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(j => j?.ok && j.data && setUser({
@@ -54,21 +53,21 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
+    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-violet-500/20">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-slate-900">
+            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-violet-500/30">
               T
             </div>
             <span className="text-xl font-bold tracking-tight hidden sm:inline">
-              Trishul<span className="text-amber-500">Casino</span>
+              Trishul<span className="gradient-text">Casino</span>
             </span>
           </Link>
           <nav className="hidden lg:flex items-center gap-1">
             {NAV_LINKS.map(l => (
               <Link key={l.href} href={l.href}
-                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-card rounded-md transition-colors">
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-violet-500/10 rounded-lg transition-colors">
                 {l.label}
               </Link>
             ))}
@@ -81,15 +80,15 @@ export function SiteHeader() {
               <BalanceDisplay balance={user.balance} />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-card transition-colors">
-                    <Avatar className="w-8 h-8 border border-amber-500/30">
-                      <AvatarFallback className="bg-amber-500 text-slate-900 text-xs font-bold">
+                  <button className="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-violet-500/10 transition-colors">
+                    <Avatar className="w-8 h-8 border-2 border-violet-500/30">
+                      <AvatarFallback className="gradient-primary text-white text-xs font-bold">
                         {user.username.slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-card border-border">
+                <DropdownMenuContent align="end" className="w-56 bg-card border-violet-500/20">
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-semibold">{user.username}</p>
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
@@ -130,27 +129,25 @@ export function SiteHeader() {
             </>
           ) : null}
 
-          <button className="lg:hidden p-2 rounded-md hover:bg-card" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="lg:hidden p-2 rounded-md hover:bg-violet-500/10" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile nav */}
       {mobileOpen && (
-        <nav className="lg:hidden border-t border-border bg-card/95 backdrop-blur">
+        <nav className="lg:hidden border-t border-violet-500/20 bg-card/95 backdrop-blur">
           <div className="container mx-auto px-4 py-3 grid grid-cols-2 gap-2">
             {NAV_LINKS.map(l => (
               <Link key={l.href} href={l.href}
                 onClick={() => setMobileOpen(false)}
-                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-background rounded-md">
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-violet-500/10 rounded-md">
                 {l.label}
               </Link>
             ))}
-            {/* Discreet admin/staff login link at bottom of mobile nav */}
             <Link href="/login?admin=1"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 text-xs text-muted-foreground/50 hover:text-amber-500 col-span-2 border-t border-border mt-2 pt-3">
+              className="px-3 py-2 text-xs text-muted-foreground/50 hover:text-violet-400 col-span-2 border-t border-violet-500/10 mt-2 pt-3">
               Staff Login
             </Link>
           </div>

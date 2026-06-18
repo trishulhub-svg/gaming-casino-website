@@ -43,77 +43,81 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Casino dark theme — applied site-wide via <html className="dark"> */
+/*
+ * TrishulCasino — Modern Gaming Theme
+ * Deep midnight + Electric purple/violet + Hot pink + Gold accents
+ */
 :root {
-  --radius: 0.625rem;
-  /* Brand palette: #0F172A (navy) / #1E293B (slate) / #F59E0B (amber) */
-  --background: #0F172A;
-  --foreground: #FFFFFF;
-  --card: #1E293B;
-  --card-foreground: #FFFFFF;
-  --popover: #1E293B;
-  --popover-foreground: #FFFFFF;
-  --primary: #F59E0B;
-  --primary-foreground: #0F172A;
-  --secondary: #334155;
-  --secondary-foreground: #FFFFFF;
-  --muted: #1E293B;
+  --radius: 0.75rem;
+  --background: #0A0B1E;
+  --foreground: #F8FAFC;
+  --card: #14152E;
+  --card-foreground: #F8FAFC;
+  --popover: #14152E;
+  --popover-foreground: #F8FAFC;
+  --primary: #8B5CF6;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1E1F3A;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1A1B35;
   --muted-foreground: #94A3B8;
-  --accent: #F59E0B;
-  --accent-foreground: #0F172A;
+  --accent: #EC4899;
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --success: #10B981;
-  --border: #334155;
-  --input: #334155;
-  --ring: #F59E0B;
-  --chart-1: #F59E0B;
-  --chart-2: #10B981;
-  --chart-3: #EF4444;
-  --chart-4: #6366F1;
-  --chart-5: #EC4899;
-  --sidebar: #1E293B;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #F59E0B;
-  --sidebar-primary-foreground: #0F172A;
-  --sidebar-accent: #334155;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #334155;
-  --sidebar-ring: #F59E0B;
+  --gold: #FBBF24;
+  --border: #2A2B4A;
+  --input: #2A2B4A;
+  --ring: #8B5CF6;
+  --chart-1: #8B5CF6;
+  --chart-2: #EC4899;
+  --chart-3: #10B981;
+  --chart-4: #FBBF24;
+  --chart-5: #3B82F6;
+  --sidebar: #14152E;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #8B5CF6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1E1F3A;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: #2A2B4A;
+  --sidebar-ring: #8B5CF6;
 }
 
 .dark {
-  --background: #0F172A;
-  --foreground: #FFFFFF;
-  --card: #1E293B;
-  --card-foreground: #FFFFFF;
-  --popover: #1E293B;
-  --popover-foreground: #FFFFFF;
-  --primary: #F59E0B;
-  --primary-foreground: #0F172A;
-  --secondary: #334155;
-  --secondary-foreground: #FFFFFF;
-  --muted: #1E293B;
+  --background: #0A0B1E;
+  --foreground: #F8FAFC;
+  --card: #14152E;
+  --card-foreground: #F8FAFC;
+  --popover: #14152E;
+  --popover-foreground: #F8FAFC;
+  --primary: #8B5CF6;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1E1F3A;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1A1B35;
   --muted-foreground: #94A3B8;
-  --accent: #F59E0B;
-  --accent-foreground: #0F172A;
+  --accent: #EC4899;
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --success: #10B981;
-  --border: #334155;
-  --input: #334155;
-  --ring: #F59E0B;
-  --chart-1: #F59E0B;
-  --chart-2: #10B981;
-  --chart-3: #EF4444;
-  --chart-4: #6366F1;
-  --chart-5: #EC4899;
-  --sidebar: #1E293B;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #F59E0B;
-  --sidebar-primary-foreground: #0F172A;
-  --sidebar-accent: #334155;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #334155;
-  --sidebar-ring: #F59E0B;
+  --gold: #FBBF24;
+  --border: #2A2B4A;
+  --input: #2A2B4A;
+  --ring: #8B5CF6;
+  --chart-1: #8B5CF6;
+  --chart-2: #EC4899;
+  --chart-3: #10B981;
+  --chart-4: #FBBF24;
+  --chart-5: #3B82F6;
+  --sidebar: #14152E;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #8B5CF6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1E1F3A;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: #2A2B4A;
+  --sidebar-ring: #8B5CF6;
 }
 
 @layer base {
@@ -124,20 +128,19 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #0F172A;
+    background: #0A0B1E;
   }
   ::-webkit-scrollbar-thumb {
-    background: #334155;
+    background: linear-gradient(180deg, #8B5CF6, #EC4899);
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+    background: linear-gradient(180deg, #7C3AED, #DB2777);
   }
 }
 
@@ -151,24 +154,61 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
-  50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(139, 92, 246, 0); }
 }
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
 }
 
 .bg-grid {
-  background-image: linear-gradient(rgba(245, 158, 11, 0.05) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(245, 158, 11, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
 .bg-hero-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.25), transparent 60%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139, 92, 246, 0.25), transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 20%, rgba(236, 72, 153, 0.15), transparent 70%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+}
+
+.card-glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.25);
 }

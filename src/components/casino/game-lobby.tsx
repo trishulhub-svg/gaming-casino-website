@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { Game } from '@/lib/types'
 
-export default function GameLobby({ category, title, description }: { category: string; title: string; description: string }) {
+export function GameLobby({ category, title, description }: { category: string; title: string; description: string }) {
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [provider, setProvider] = useState<string>('all')

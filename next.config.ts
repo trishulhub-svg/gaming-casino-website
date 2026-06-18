@@ -5,18 +5,13 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // External packages that must not be bundled (libSQL needs native bindings).
   serverExternalPackages: ["@libsql/client", "@prisma/client"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "placehold.co" },
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
-  },
-  experimental: {
-    // Workaround for React 19 canary + Next 16 prerender bug
-    // (useContext returns null during synthetic /_global-error prerender).
-    // Exit prerender early instead of failing the build.
-    prerenderEarlyExit: true,
   },
 };
 

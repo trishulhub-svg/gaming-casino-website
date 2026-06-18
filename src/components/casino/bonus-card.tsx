@@ -45,21 +45,21 @@ export function BonusCard({ bonus }: { bonus: Bonus }) {
   }
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-card to-slate-800/50 border-amber-500/20">
+    <Card className="p-5 bg-gradient-to-br from-card to-violet-950/30 border-violet-500/20 hover:border-violet-500/40 transition-colors">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
-            <Gift className="h-5 w-5 text-amber-500" />
+          <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
+            <Gift className="h-5 w-5 text-white" />
           </div>
           <div>
             <h3 className="font-bold">{bonus.name}</h3>
-            <Badge variant="outline" className="text-[10px] capitalize border-amber-500/40 text-amber-500">
+            <Badge variant="outline" className="text-[10px] capitalize border-violet-500/40 text-violet-400">
               {bonus.bonus_type}
             </Badge>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-amber-500">{formatINR(bonus.bonus_amount)}</div>
+          <div className="text-2xl font-black gradient-text">{formatINR(bonus.bonus_amount)}</div>
         </div>
       </div>
       <p className="text-sm text-muted-foreground mb-4">{bonus.description}</p>
@@ -76,7 +76,7 @@ export function BonusCard({ bonus }: { bonus: Bonus }) {
       <Button
         onClick={handleClaim}
         disabled={claiming || claimed}
-        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900"
+        className="w-full gradient-primary border-0 hover:opacity-90"
       >
         {claimed ? (
           <><Check className="h-4 w-4 mr-1" /> Claimed</>

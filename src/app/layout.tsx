@@ -31,13 +31,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="bg-background text-foreground min-h-screen flex flex-col antialiased">
         <ClientChrome />
         <main className="flex-1 pb-24 md:pb-8">{children}</main>
-        <footer className="hidden md:block bg-card border-t border-border py-6 px-4 mt-auto">
+        <footer className="hidden md:block bg-card border-t border-violet-500/20 py-6 px-4 mt-auto">
           <div className="container mx-auto text-center text-xs text-muted-foreground space-y-2">
             <p>© {new Date().getFullYear()} TrishulCasino. All rights reserved.</p>
-            <p className="text-amber-500 font-semibold">⚠ 18+ Only · Play Responsibly · Gambling can be addictive</p>
+            <p className="text-pink-400 font-semibold">⚠ 18+ Only · Play Responsibly · Gambling can be addictive</p>
             <p>Licensed for demo purposes. Not a real-money gambling site.</p>
             <p className="pt-2">
-              <a href="/login?admin=1" className="text-muted-foreground/50 hover:text-amber-500 underline-offset-2 hover:underline">
+              <a href="/login?admin=1" className="text-muted-foreground/50 hover:text-violet-400 underline-offset-2 hover:underline">
                 Staff Login
               </a>
             </p>

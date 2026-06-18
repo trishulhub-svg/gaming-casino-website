@@ -15,10 +15,7 @@ export function Leaderboard() {
   const [rows, setRows] = useState<LeaderRow[]>([])
 
   useEffect(() => {
-    fetch('/api/public/leaderboard')
-      .then(r => r.json())
-      .then(j => j?.ok && setRows(j.data || []))
-      .catch(() => {})
+    fetch('/api/public/leaderboard').then(r => r.json()).then(j => j?.ok && setRows(j.data || [])).catch(() => {})
   }, [])
 
   if (rows.length === 0) {
@@ -30,22 +27,22 @@ export function Leaderboard() {
   }
 
   return (
-    <Card className="overflow-hidden p-0">
-      <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-3 flex items-center gap-2">
-        <Trophy className="h-5 w-5 text-slate-900" />
-        <h3 className="font-bold text-slate-900">Today&apos;s Top Winners</h3>
+    <Card className="overflow-hidden p-0 border-violet-500/20">
+      <div className="gradient-primary p-3 flex items-center gap-2">
+        <Trophy className="h-5 w-5 text-white" />
+        <h3 className="font-bold text-white">Today&apos;s Top Winners</h3>
       </div>
       <div className="divide-y divide-border">
         {rows.map((row, i) => (
-          <div key={row.rank} className="flex items-center gap-3 p-3 hover:bg-card/50">
+          <div key={row.rank} className="flex items-center gap-3 p-3 hover:bg-violet-500/5">
             <div className="w-7 flex justify-center">
-              {i === 0 ? <Crown className="h-5 w-5 text-amber-500" /> :
+              {i === 0 ? <Crown className="h-5 w-5 text-yellow-400" /> :
                i === 1 ? <Medal className="h-5 w-5 text-slate-300" /> :
-               i === 2 ? <Medal className="h-5 w-5 text-amber-700" /> :
+               i === 2 ? <Medal className="h-5 w-5 text-yellow-600" /> :
                <span className="text-sm font-bold text-muted-foreground">{row.rank}</span>}
             </div>
             <div className="flex-1 text-sm font-medium">{row.username}</div>
-            <div className="text-sm font-bold text-amber-500">{formatINR(row.total_won)}</div>
+            <div className="text-sm font-bold text-emerald-400">{formatINR(row.total_won)}</div>
           </div>
         ))}
       </div>
