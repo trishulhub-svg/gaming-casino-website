@@ -106,3 +106,47 @@ Stage Summary:
 - All dependency version mismatches fixed
 - Lockfile is fresh and correct
 - User needs to: Vercel → Deployments → Redeploy → UNCHECK "Use existing Build Cache"
+
+---
+Task ID: /agentfix-001
+Agent: Ujjval (Support Dev / SMM, Tier 2)
+Task: /agentfix command — Install AgentFix monitoring agent on TrishulCasino site
+
+Work Log:
+- GUARDIAN: Verified Ujjval (Tier 2) has access to /agentfix command
+- TOTAL: Scope = install client-side monitoring agent on gaming-casino-website
+- DO IT:
+  * Created public/agentfix.js — 3KB client script that captures:
+    - JS errors (window.onerror)
+    - Unhandled promise rejections
+    - console.error calls
+    - Failed/slow fetch calls (>5s = slow)
+    - Page load timing (domContentLoaded, loadComplete, etc.)
+    - Session start events
+  * Created src/lib/agentfix-store.ts — in-memory store (last 500 events, 100 sessions)
+  * Created 5 API endpoints:
+    - POST /api/agentfix/report (public, batched events from client)
+    - GET /api/agentfix/health (public, uptime check)
+    - GET /api/agentfix/events (admin-only, filterable list)
+    - GET /api/agentfix/stats (admin-only, summary)
+    - POST /api/agentfix/clear (admin-only, wipe store)
+  * Created /agentfix dashboard page with:
+    - 5 stat cards (events, errors, sessions, error rate, latest)
+    - Live event feed with type filter dropdown
+    - Active sessions panel
+    - Site health card with uptime URL
+    - Auto-refresh every 5s (toggleable)
+  * Injected <Script src="/agentfix.js" strategy="afterInteractive" /> into RootLayout
+  * Updated middleware to protect /agentfix + admin endpoints, leave report/health public
+  * Added AgentFix link to admin dropdown menu
+- ON TOP: Build verified, 66 routes compile cleanly (60 original + 6 new)
+- ZOO: Committed c743e9c, force-pushed to GitHub
+- CHRONICLER: This log entry
+
+Stage Summary:
+- Repository: https://github.com/trishulhub-svg/gaming-casino-website
+- AgentFix installed and active on every page
+- Admin dashboard: https://your-vercel-domain.vercel.app/agentfix
+- Health endpoint: https://your-vercel-domain.vercel.app/api/agentfix/health
+- In-memory store resets on each serverless instance cold start (acceptable for demo)
+- For production: integrate with Sentry / Logflare / Turso for persistence
