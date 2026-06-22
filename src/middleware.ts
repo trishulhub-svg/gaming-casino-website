@@ -2,14 +2,28 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyTokenEdge } from './lib/auth-edge'
 
 // Public site — no login required to browse.
-// Only /admin routes (and /api/admin/*) require admin authentication.
-const ADMIN_PREFIXES = ['/admin', '/api/admin']
+// Only these routes require admin authentication:
+//   /admin, /api/admin/*, /agentfix (dashboard), /api/agentfix/events, /api/agentfix/stats, /api/agentfix/clear
+// Public agentfix routes (no auth): /api/agentfix/report, /api/agentfix/health
+const ADMIN_PROTECTED_PREFIXES = [
+  '/admin',
+  '/api/admin',
+  '/agentfix',
+]
+const ADMIN_PROTECTED_EXACT = [
+  '/api/agentfix/events',
+  '/api/agentfix/stats',
+  '/api/agentfix/clear',
+]
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Only enforce auth on admin routes
-  if (!ADMIN_PREFIXES.some(p => pathname.startsWith(p))) {
+  const isProtected =
+    ADMIN_PROTECTED_PREFIXES.some(p => pathname.startsWith(p)) ||
+    ADMIN_PROTECTED_EXACT.some(p => pathname === p)
+
+  if (!isProtected) {
     return NextResponse.next()
   }
 

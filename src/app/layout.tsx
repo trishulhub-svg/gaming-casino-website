@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ClientChrome } from "@/components/casino/client-chrome";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "TrishulCasino — Premium Online Gaming Platform",
@@ -43,6 +44,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </p>
           </div>
         </footer>
+        {/* AgentFix — client-side monitoring agent (loads after page is interactive) */}
+        <Script src="/agentfix.js" strategy="afterInteractive" />
       </body>
     </html>
   );

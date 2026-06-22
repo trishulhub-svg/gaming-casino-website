@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
-  Wallet, LogOut, User, LayoutDashboard, Gift, Users, LifeBuoy, Shield, Menu, X
+  Wallet, LogOut, User, LayoutDashboard, Gift, Users, LifeBuoy, Shield, Menu, X, Activity
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -117,6 +117,9 @@ export function SiteHeader() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => router.push('/admin')}>
                         <Shield className="mr-2 h-4 w-4" /> Admin Panel
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push('/agentfix')}>
+                        <Activity className="mr-2 h-4 w-4" /> AgentFix Monitor
                       </DropdownMenuItem>
                     </>
                   )}
