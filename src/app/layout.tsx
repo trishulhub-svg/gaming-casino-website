@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ClientChrome } from "@/components/casino/client-chrome";
+import { AgentationProvider } from "@/components/casino/agentation-provider";
 import Script from "next/script";
 
 // Force ALL pages to be server-rendered on demand (no static prerender).
@@ -49,8 +50,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </p>
           </div>
         </footer>
-        {/* AgentFix — client-side monitoring agent (loads after page is interactive) */}
+        {/* AgentFix — error/performance monitoring (always on) */}
         <Script src="/agentfix.js" strategy="afterInteractive" />
+        {/* Agentation — visual annotation tool for QA (dev-only by default) */}
+        <AgentationProvider />
       </body>
     </html>
   );
