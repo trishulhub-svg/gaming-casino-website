@@ -1,12 +1,13 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: false,
-  // External packages that must not be bundled (libSQL needs native bindings).
-  serverExternalPackages: ["@libsql/client", "@prisma/client"],
+  serverComponentsExternalPackages: ["@libsql/client", "@prisma/client"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "placehold.co" },

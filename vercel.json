@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "bun install",
-  "buildCommand": "next build --experimental-build-mode=compile",
   "env": {
     "NEXT_PUBLIC_APP_NAME": "TrishulCasino"
   }

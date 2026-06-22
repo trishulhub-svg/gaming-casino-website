@@ -3,6 +3,11 @@ import "./globals.css";
 import { ClientChrome } from "@/components/casino/client-chrome";
 import Script from "next/script";
 
+// Force ALL pages to be server-rendered on demand (no static prerender).
+// This prevents the useContext null bug during prerender that breaks
+// next/link and other App Router components.
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: "TrishulCasino — Premium Online Gaming Platform",
   description: "Play slots, lottery, sports, live casino, and more. Instant deposits via UPI, 24/7 withdrawals, fair play guaranteed. 18+ only.",
