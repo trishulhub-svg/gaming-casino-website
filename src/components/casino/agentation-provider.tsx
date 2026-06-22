@@ -3,12 +3,13 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 
-// Load Agentation only on the client and only when explicitly enabled.
-// Per Agentation docs, it's intended for development use, but we also allow
-// enabling in production via NEXT_PUBLIC_AGENTATION=1 (useful for live QA).
-//
-// Docs: https://www.agentation.com/install
+// Load Agentation on the client side.
+// Per Agentation docs: https://www.agentation.com/install
 // Requirements: React 18+, client-side only, desktop only.
+//
+// We load it on ALL environments (dev + production) so you can use it
+// to capture issues on your live Vercel deployment.
+// To disable in production, set NEXT_PUBLIC_AGENTATION=0 in Vercel env vars.
 const Agentation = dynamic(
   () => import('agentation').then(m => ({ default: m.Agentation })),
   {
@@ -21,11 +22,9 @@ export function AgentationProvider() {
   const [enabled, setEnabled] = useState(false)
 
   useEffect(() => {
-    // Enable in development by default
-    // Also allow explicit enable via NEXT_PUBLIC_AGENTATION=1 for production QA
-    const isDev = process.env.NODE_ENV === 'development'
-    const explicitEnable = process.env.NEXT_PUBLIC_AGENTATION === '1'
-    if (isDev || explicitEnable) {
+    // Allow disabling via NEXT_PUBLIC_AGENTATION=0 (defaults to enabled)
+    const explicitlyDisabled = process.env.NEXT_PUBLIC_AGENTATION === '0'
+    if (!explicitlyDisabled) {
       setEnabled(true)
     }
   }, [])
@@ -34,8 +33,6 @@ export function AgentationProvider() {
 
   return (
     <Agentation
-      // Optional: point to a local MCP server (npx agentation-mcp server, default port 4747)
-      // endpoint="http://localhost:4747"
       // Auto-copy annotations to clipboard when added
       copyToClipboard
       onAnnotationAdd={(annotation: unknown) => {
